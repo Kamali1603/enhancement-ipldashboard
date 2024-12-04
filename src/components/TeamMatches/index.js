@@ -1,9 +1,10 @@
-// Write your code here
 import {Component} from 'react'
 import Loader from 'react-loader-spinner'
+import {Link} from 'react-router-dom'
 
 import LatestMatch from '../LatestMatch'
 import MatchCard from '../MatchCard'
+import PieChart from '../PieChart'
 
 import './index.css'
 
@@ -51,6 +52,34 @@ class TeamMatches extends Component {
     this.setState({teamMatchesData: formattedData, isLoading: false})
   }
 
+  getNoOfMatches = value => {
+    const {teamMatchesData} = this.state
+    const {latestMatch, recentMatches} = teamMatchesData
+    const currentMatch = value === latestMatch.matchStatus ? 1 : 0
+    const result =
+      recentMatches.filter(match => match.matchStatus === value).length +
+      currentMatch
+    return result
+  }
+
+  generatePieChartData = () => {
+    const wonMatches = this.getNoOfMatches('Won')
+    const lostMatches = this.getNoOfMatches('Lost')
+    const drawnMatches = this.getNoOfMatches('Drawn')
+
+    console.log('Pie chart data:', [
+      {name: 'Won', value: wonMatches},
+      {name: 'Lost', value: lostMatches},
+      {name: 'Drawn', value: drawnMatches},
+    ])
+
+    return [
+      {name: 'Won', value: wonMatches},
+      {name: 'Lost', value: lostMatches},
+      {name: 'Drawn', value: drawnMatches > 0 ? drawnMatches : 1},
+    ]
+  }
+
   renderRecentMatchesList = () => {
     const {teamMatchesData} = this.state
     const {recentMatches} = teamMatchesData
@@ -72,13 +101,20 @@ class TeamMatches extends Component {
       <div className="responsive-container">
         <img src={teamBannerURL} alt="team banner" className="team-banner" />
         <LatestMatch latestMatchData={latestMatch} />
+        <h1 className="chart-head">Team Statistics</h1>
+        <PieChart data={this.generatePieChartData()} />
         {this.renderRecentMatchesList()}
+        <Link to="/">
+          <button type="button" className="back-btn">
+            Back
+          </button>
+        </Link>
       </div>
     )
   }
 
   renderLoader = () => (
-    <div testid="loader" className="loader-container">
+    <div className="loader-container">
       <Loader type="Oval" color="#ffffff" height={50} width={50} />
     </div>
   )
@@ -112,7 +148,7 @@ class TeamMatches extends Component {
 
   render() {
     const {isLoading} = this.state
-    const className = `team-matches-container {this.getRouteClassName()}`
+    const className = `team-matches-container ${this.getRouteClassName()}`
 
     return (
       <div className={className}>

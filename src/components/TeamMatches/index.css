@@ -67,3 +67,21 @@
     margin-top: 32px;
   }
 }
+
+.back-btn {
+  color: #000000;
+  background-color: #fff;
+  width: 100px;
+  height: 30px;
+  border: none;
+  font-size: 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-family: 'Bree Serif';
+}
+
+.chart-head{
+  font-family: 'Bree Serif';
+  color: #fff;
+  font-size: 16px;
+}
